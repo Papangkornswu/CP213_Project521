@@ -1,3 +1,5 @@
+package com.talkdeck.ui.theme
+
 val PastelPink = androidx.compose.ui.graphics.Color(0xFFFFD1DC)
 val PastelBlue = androidx.compose.ui.graphics.Color(0xFFAEC6CF)
 val PastelLavender = androidx.compose.ui.graphics.Color(0xFFE6E6FA)
