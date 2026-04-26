@@ -1,0 +1,11 @@
+val PastelPink = androidx.compose.ui.graphics.Color(0xFFFFD1DC)
+val PastelBlue = androidx.compose.ui.graphics.Color(0xFFAEC6CF)
+val PastelLavender = androidx.compose.ui.graphics.Color(0xFFE6E6FA)
+val PastelMint = androidx.compose.ui.graphics.Color(0xFFB0E0E6)
+val PastelBeige = androidx.compose.ui.graphics.Color(0xFFF5F5DC)
+
+val DarkPastelPink = androidx.compose.ui.graphics.Color(0xFFD89CA9)
+val DarkPastelBlue = androidx.compose.ui.graphics.Color(0xFF7A939C)
+val DarkPastelLavender = androidx.compose.ui.graphics.Color(0xFFB3B3C7)
+val DarkPastelMint = androidx.compose.ui.graphics.Color(0xFF7DADB3)
+val DarkPastelBeige = androidx.compose.ui.graphics.Color(0xFFC2C2A9)
