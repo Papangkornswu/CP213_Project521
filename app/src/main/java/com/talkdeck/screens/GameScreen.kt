@@ -10,8 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.talkdeck.viewmodel.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,14 +23,23 @@ fun GameScreen(viewModel: GameViewModel, onEndGame: () -> Unit) {
 
     if (uiState.isGameOver) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Game Over!", style = MaterialTheme.typography.titleLarge)
-            Text("You've gone through the deck.", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onEndGame) { Text("Back to Home") }
+            Text("จบเกม!", style = MaterialTheme.typography.titleLarge.copy(fontSize = 32.sp, fontWeight = FontWeight.Bold))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("คุณเล่นการ์ดจนหมดกองแล้ว 🎉", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
+            Spacer(modifier = Modifier.height(32.dp))
+            Button(
+                onClick = onEndGame,
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) { 
+                Text("กลับหน้าแรก", fontSize = 18.sp, fontWeight = FontWeight.Bold) 
+            }
         }
         return
     }
@@ -37,49 +48,65 @@ fun GameScreen(viewModel: GameViewModel, onEndGame: () -> Unit) {
     val currentPlayer = uiState.players[uiState.currentPlayerIndex]
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(32.dp))
-        Text(text = "Turn: $currentPlayer", style = MaterialTheme.typography.titleLarge)
-        Text(text = "Remaining cards: ${uiState.deck.size}", style = MaterialTheme.typography.bodySmall)
+        Card(
+            shape = RoundedCornerShape(100.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text(
+                text = "ตาของ: $currentPlayer", 
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = "การ์ดที่เหลือ: ${uiState.deck.size}", 
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
         FlipCard(
             isFlipped = uiState.isFlipped,
-            onClick = { viewModel.flipCard() },
+            onFlip = { viewModel.flipCard() },
+            onNext = { viewModel.nextTurn() },
             front = {
                 CardFront()
             },
             back = {
-                CardBack(cardType = currentCard?.type?.name ?: "", content = currentCard?.content ?: "")
+                CardBack(
+                    cardType = if (currentCard?.type?.name == "QUESTION") "คำถาม" else "คำสั่ง", 
+                    content = currentCard?.content ?: ""
+                )
             }
         )
 
         Spacer(modifier = Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            OutlinedButton(onClick = { viewModel.nextTurn() }) {
-                Text("Skip Card")
-            }
-            Button(
-                onClick = { viewModel.nextTurn() },
-                enabled = uiState.isFlipped
-            ) {
-                Text("Next Turn")
-            }
-        }
+        
+        // Remove old buttons, add hint text
+        Text(
+            text = if (!uiState.isFlipped) "แตะการ์ดเพื่อเปิด" else "แตะการ์ดเพื่อไปยังตาถัดไป",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
     }
 }
 
 @Composable
 fun FlipCard(
     isFlipped: Boolean,
-    onClick: () -> Unit,
+    onFlip: () -> Unit,
+    onNext: () -> Unit,
     front: @Composable () -> Unit,
     back: @Composable () -> Unit
 ) {
@@ -91,12 +118,18 @@ fun FlipCard(
     Box(
         modifier = Modifier
             .fillMaxWidth(0.85f)
-            .aspectRatio(0.7f)
+            .aspectRatio(0.65f)
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 12f * density
             }
-            .clickable { if (!isFlipped) onClick() },
+            .clickable { 
+                if (!isFlipped) {
+                    onFlip()
+                } else {
+                    onNext()
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         if (rotation <= 90f) {
@@ -113,12 +146,17 @@ fun FlipCard(
 fun CardFront() {
     Card(
         modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Text("TalkDeck\nTap to flip", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onPrimary, textAlign = TextAlign.Center)
+            Text(
+                "TalkDeck", 
+                style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Black, letterSpacing = (-2).sp), 
+                color = MaterialTheme.colorScheme.onPrimary, 
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -127,22 +165,28 @@ fun CardFront() {
 fun CardBack(cardType: String, content: String) {
     Card(
         modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        shape = RoundedCornerShape(32.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = cardType, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondary)
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = cardType, 
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold, letterSpacing = 2.sp), 
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = content,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.headlineSmall.copy(lineHeight = 36.sp),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSecondary
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

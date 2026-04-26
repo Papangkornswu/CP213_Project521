@@ -22,17 +22,18 @@ fun HomeScreen(onStartGame: () -> Unit) {
         Text(
             text = "TalkDeck",
             style = MaterialTheme.typography.titleLarge.copy(
-                fontSize = 48.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
+                fontSize = 54.sp,
+                fontWeight = FontWeight.Black,
+                color = MaterialTheme.colorScheme.primary,
+                letterSpacing = (-1).sp
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = "Conversation Game",
+            text = "เกมบทสนทนา",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-            modifier = Modifier.padding(bottom = 48.dp)
+            modifier = Modifier.padding(bottom = 64.dp)
         )
 
         Button(
@@ -44,28 +45,30 @@ fun HomeScreen(onStartGame: () -> Unit) {
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("Start Game", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text("เริ่มเกม", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
         
         OutlinedButton(
             onClick = { /* TODO Settings */ },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(56.dp)
                 .padding(bottom = 12.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
         ) {
-            Text("Settings")
+            Text("ตั้งค่า", fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
 
         OutlinedButton(
             onClick = { /* TODO How To Play */ },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(12.dp)
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
         ) {
-            Text("How to Play")
+            Text("วิธีเล่น", fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
     }
 }

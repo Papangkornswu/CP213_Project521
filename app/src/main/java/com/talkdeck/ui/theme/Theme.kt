@@ -10,52 +10,46 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = DarkPastelPink,
-    secondary = DarkPastelBlue,
-    tertiary = DarkPastelLavender,
-    background = androidx.compose.ui.graphics.Color(0xFF1E1E1E),
-    surface = androidx.compose.ui.graphics.Color(0xFF2C2C2C),
-    onPrimary = androidx.compose.ui.graphics.Color.White,
-    onSecondary = androidx.compose.ui.graphics.Color.White,
-    onTertiary = androidx.compose.ui.graphics.Color.White,
-    onBackground = DarkPastelBeige,
-    onSurface = DarkPastelBeige,
+private val ModernDarkColorScheme = darkColorScheme(
+    primary = ModernBlue,
+    secondary = ModernSurface,
+    tertiary = ModernLightBlue,
+    background = ModernBlack,
+    surface = ModernSurface,
+    onPrimary = ModernWhite,
+    onSecondary = ModernWhite,
+    onTertiary = ModernBlack,
+    onBackground = ModernWhite,
+    onSurface = ModernWhite,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = PastelPink,
-    secondary = PastelBlue,
-    tertiary = PastelLavender,
-    background = PastelBeige,
-    surface = androidx.compose.ui.graphics.Color.White,
-    onPrimary = androidx.compose.ui.graphics.Color.Black,
-    onSecondary = androidx.compose.ui.graphics.Color.Black,
-    onTertiary = androidx.compose.ui.graphics.Color.Black,
-    onBackground = androidx.compose.ui.graphics.Color(0xFF333333),
-    onSurface = androidx.compose.ui.graphics.Color(0xFF333333),
+private val ModernLightColorScheme = lightColorScheme(
+    primary = ModernBlue,
+    secondary = ModernWhite,
+    tertiary = ModernLightBlue,
+    background = Color(0xFFF2F2F7),
+    surface = ModernWhite,
+    onPrimary = ModernWhite,
+    onSecondary = ModernBlack,
+    onTertiary = ModernWhite,
+    onBackground = ModernBlack,
+    onSurface = ModernBlack,
 )
 
 @Composable
 fun TalkDeckTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    // We force the Modern look to prefer Dark Mode aesthetics for the "Modern Black, Blue, White" feel you wanted.
+    darkTheme: Boolean = true, // isSystemInDarkTheme() 
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = if (darkTheme) ModernDarkColorScheme else ModernLightColorScheme
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
