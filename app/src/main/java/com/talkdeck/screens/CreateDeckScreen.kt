@@ -30,6 +30,9 @@ fun CreateDeckScreen(
     var cards by remember { mutableStateOf(listOf<Card>()) }
     var currentCardContent by remember { mutableStateOf("") }
     var currentCardType by remember { mutableStateOf(CardType.QUESTION) }
+    var bulkText by remember { mutableStateOf("") }
+    var bulkCardType by remember { mutableStateOf(CardType.QUESTION) }
+    var selectedTabIndex by remember { mutableStateOf(0) }
 
     Scaffold(
         topBar = {
@@ -88,46 +91,110 @@ fun CreateDeckScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("เพิ่มการ์ดใหม่", fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = currentCardContent,
-                        onValueChange = { currentCardContent = it },
-                        label = { Text("ข้อความบนการ์ด") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        FilterChip(
-                            selected = currentCardType == CardType.QUESTION,
-                            onClick = { currentCardType = CardType.QUESTION },
-                            label = { Text("คำถาม") }
+                Column {
+                    TabRow(selectedTabIndex = selectedTabIndex) {
+                        Tab(
+                            selected = selectedTabIndex == 0,
+                            onClick = { selectedTabIndex = 0 },
+                            text = { Text("เพิ่มทีละใบ") }
                         )
-                        FilterChip(
-                            selected = currentCardType == CardType.ACTION,
-                            onClick = { currentCardType = CardType.ACTION },
-                            label = { Text("คำสั่ง (ทำ)") }
+                        Tab(
+                            selected = selectedTabIndex == 1,
+                            onClick = { selectedTabIndex = 1 },
+                            text = { Text("วางข้อความ (หลายใบ)") }
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Button(
-                            onClick = {
-                                if (currentCardContent.isNotBlank()) {
-                                    val newCard = Card(
-                                        id = cards.size + 1,
-                                        type = currentCardType,
-                                        content = currentCardContent.trim()
-                                    )
-                                    cards = cards + newCard
-                                    currentCardContent = ""
+                    }
+
+                    if (selectedTabIndex == 0) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            OutlinedTextField(
+                                value = currentCardContent,
+                                onValueChange = { currentCardContent = it },
+                                label = { Text("ข้อความบนการ์ด") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                FilterChip(
+                                    selected = currentCardType == CardType.QUESTION,
+                                    onClick = { currentCardType = CardType.QUESTION },
+                                    label = { Text("คำถาม") }
+                                )
+                                FilterChip(
+                                    selected = currentCardType == CardType.ACTION,
+                                    onClick = { currentCardType = CardType.ACTION },
+                                    label = { Text("คำสั่ง (ทำ)") }
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                Button(
+                                    onClick = {
+                                        if (currentCardContent.isNotBlank()) {
+                                            val newCard = Card(
+                                                id = cards.size + 1,
+                                                type = currentCardType,
+                                                content = currentCardContent.trim()
+                                            )
+                                            cards = cards + newCard
+                                            currentCardContent = ""
+                                        }
+                                    },
+                                    enabled = currentCardContent.isNotBlank()
+                                ) {
+                                    Text("เพิ่ม")
                                 }
-                            },
-                            enabled = currentCardContent.isNotBlank()
-                        ) {
-                            Text("เพิ่ม")
+                            }
+                        }
+                    } else {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            OutlinedTextField(
+                                value = bulkText,
+                                onValueChange = { bulkText = it },
+                                label = { Text("วางข้อความ (1 บรรทัด = 1 การ์ด)") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(120.dp),
+                                maxLines = 10
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                FilterChip(
+                                    selected = bulkCardType == CardType.QUESTION,
+                                    onClick = { bulkCardType = CardType.QUESTION },
+                                    label = { Text("คำถาม") }
+                                )
+                                FilterChip(
+                                    selected = bulkCardType == CardType.ACTION,
+                                    onClick = { bulkCardType = CardType.ACTION },
+                                    label = { Text("คำสั่ง (ทำ)") }
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                Button(
+                                    onClick = {
+                                        if (bulkText.isNotBlank()) {
+                                            val lines = bulkText.split("\n").filter { it.isNotBlank() }
+                                            val newCards = lines.mapIndexed { index, text ->
+                                                Card(
+                                                    id = cards.size + index + 1,
+                                                    type = bulkCardType,
+                                                    content = text.trim()
+                                                )
+                                            }
+                                            cards = cards + newCards
+                                            bulkText = ""
+                                            selectedTabIndex = 0
+                                        }
+                                    },
+                                    enabled = bulkText.isNotBlank()
+                                ) {
+                                    Text("นำเข้า")
+                                }
+                            }
                         }
                     }
                 }
