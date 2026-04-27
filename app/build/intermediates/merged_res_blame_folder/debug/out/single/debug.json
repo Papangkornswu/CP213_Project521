@@ -1,7 +1,15 @@
 [
     {
-        "merged": "com.talkdeck.app-merged_res-50:/drawable_drawable.xml.flat",
-        "source": "com.talkdeck.app-main-52:/drawable/drawable.xml"
+        "merged": "C:\\Users\\cente\\.gradle\\daemon\\8.2\\com.talkdeck.app-merged_res-50:\\drawable_drawable.xml.flat",
+        "source": "C:\\Users\\cente\\.gradle\\daemon\\8.2\\com.talkdeck.app-main-52:\\drawable\\drawable.xml"
+    },
+    {
+        "merged": "C:\\Users\\cente\\.gradle\\daemon\\8.2\\com.talkdeck.app-merged_res-50:\\drawable_logo.png.flat",
+        "source": "C:\\Users\\cente\\.gradle\\daemon\\8.2\\com.talkdeck.app-main-52:\\drawable\\logo.png"
+    },
+    {
+        "merged": "C:\\Users\\cente\\.gradle\\daemon\\8.2\\com.talkdeck.app-merged_res-50:\\drawable_golo.png.flat",
+        "source": "C:\\Users\\cente\\.gradle\\daemon\\8.2\\com.talkdeck.app-main-52:\\drawable\\golo.png"
     },
     {
         "merged": "com.talkdeck.app-merged_res-50:/drawable_logo.png.flat",
