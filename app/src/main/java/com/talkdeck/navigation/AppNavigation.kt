@@ -26,7 +26,15 @@ fun AppNavigation() {
             DeckSelectionScreen(
                 viewModel = gameViewModel,
                 onGameStarted = { navController.navigate("game") },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onCreateDeck = { navController.navigate("create_deck") }
+            )
+        }
+        composable("create_deck") {
+            com.talkdeck.screens.CreateDeckScreen(
+                viewModel = gameViewModel,
+                onBack = { navController.popBackStack() },
+                onDeckCreated = { navController.popBackStack() }
             )
         }
         composable("game") {
