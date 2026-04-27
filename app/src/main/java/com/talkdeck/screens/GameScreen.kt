@@ -54,19 +54,6 @@ fun GameScreen(viewModel: GameViewModel, onEndGame: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(32.dp))
-        Card(
-            shape = RoundedCornerShape(100.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Text(
-                text = "ตาของ: $currentPlayer", 
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "การ์ดที่เหลือ: ${uiState.deck.size}", 
             style = MaterialTheme.typography.labelMedium,
@@ -112,7 +99,7 @@ fun FlipCard(
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = tween(durationMillis = 600)
+        animationSpec = if (isFlipped) tween(durationMillis = 600) else androidx.compose.animation.core.snap()
     )
 
     Box(

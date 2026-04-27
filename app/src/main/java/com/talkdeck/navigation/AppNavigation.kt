@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.talkdeck.screens.GameScreen
 import com.talkdeck.screens.HomeScreen
-import com.talkdeck.screens.SetupScreen
+import com.talkdeck.screens.DeckSelectionScreen
 import com.talkdeck.viewmodel.GameViewModel
 
 @Composable
@@ -23,7 +23,7 @@ fun AppNavigation() {
             )
         }
         composable("setup") {
-            SetupScreen(
+            DeckSelectionScreen(
                 viewModel = gameViewModel,
                 onGameStarted = { navController.navigate("game") },
                 onBack = { navController.popBackStack() }

@@ -2,10 +2,7 @@ package com.talkdeck.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.talkdeck.data.Card
-import com.talkdeck.data.CardType
-import com.talkdeck.data.Category
-import com.talkdeck.data.Depth
-import com.talkdeck.data.SampleData
+import com.talkdeck.data.Deck
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,22 +21,15 @@ class GameViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(GameState())
     val uiState: StateFlow<GameState> = _uiState.asStateFlow()
 
-    fun startGame(category: Category?, depth: Depth?, includeActions: Boolean, playerCount: Int) {
-        val filteredCards = SampleData.cards.filter { card ->
-            val isAction = card.type == CardType.ACTION
-            if (isAction) {
-                includeActions
-            } else {
-                val catMatch = category == null || card.category == category
-                val depthMatch = depth == null || card.depth == depth
-                catMatch && depthMatch
-            }
-        }.shuffled()
+    private val _customDecks = MutableStateFlow<List<Deck>>(emptyList())
+    val customDecks: StateFlow<List<Deck>> = _customDecks.asStateFlow()
 
-        // Fallback to a wider set if the resulting deck is too small (e.g. < 5 cards)
-        val finalDeck = if (filteredCards.size < 5) SampleData.cards.shuffled() else filteredCards
+    fun startGame(selectedDeck: Deck) {
+        val finalDeck = selectedDeck.cards.shuffled()
 
-        val names = (1..playerCount).map { "Player $it" }
+        // Since we removed player selection, we just have a generic player list, 
+        // or actually we don't need players anymore since the indicator is removed.
+        val names = listOf("Player 1", "Player 2")
 
         _uiState.update { 
             it.copy(
@@ -75,5 +65,9 @@ class GameViewModel : ViewModel() {
                 isFlipped = false
             )
         }
+    }
+
+    fun addCustomDeck(deck: Deck) {
+        _customDecks.update { it + deck }
     }
 }

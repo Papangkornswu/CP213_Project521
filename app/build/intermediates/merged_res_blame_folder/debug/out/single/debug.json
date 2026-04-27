@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.talkdeck.app-merged_res-50:/drawable_drawable.xml.flat",
+        "source": "com.talkdeck.app-main-52:/drawable/drawable.xml"
+    },
+    {
+        "merged": "com.talkdeck.app-merged_res-50:/drawable_logo.png.flat",
+        "source": "com.talkdeck.app-main-52:/drawable/logo.png"
+    }
+]
